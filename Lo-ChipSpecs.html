@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<HTML>
+<HEAD>
+    <TITLE>Loisel's Lo-Chip Technical Reference</TITLE>
+    <style>
+        body {
+            background-color: rgb(41, 41, 41);
+            color: rgb(165, 165, 165);
+            margin-left: 20%;
+            margin-right: 20%;
+            font-family: Arial, sans-serif;
+            font-size: 15pt;
+        }
+
+        a {
+            color: #a53f3f;
+        }
+    </style>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" ALINK="#00007F" VLINK="#7F7F7F">
+<CENTER>
+    Loisel's<BR>
+    <FONT SIZE=7><STRONG><TT>Lo-Chip</TT></STRONG></FONT><BR>
+</CENTER>
+<BR>
+<FONT SIZE=4><STRONG><EM><U>
+    <A NAME="0.0">0.0</A> - Table of Contents&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+</U></EM></STRONG></FONT>
+<BR>
+<TT><FONT SIZE=3>
+    <STRONG><A HREF="#0.0">0.0</A> - Table of Contents</STRONG><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#0.1">0.1</A> - Using This Document<BR>
+    <BR>
+    <STRONG><A HREF="#1.0">1.0</A> - About Lo-Chip</STRONG><BR>
+    <BR>
+    <STRONG><A HREF="#2.0">2.0</A> - Lo-Chip Specifications</STRONG><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.1">2.1</A> - Memory<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#memmap">Diagram</A> - Memory
+    Map<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.2">2.2</A> - Registers<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.3">2.3</A> - Keyboard<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#keyboard">Diagram</A> - Keyboard
+    Layout<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.4">2.4</A> - Display<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#dispcoords">Diagram</A> - Display
+    Coordinates<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#font">Listing</A> - The Lo-Chip
+    Hexadecimal Font<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.5">2.5</A> - Timers & Sound<BR>
+    <BR>
+    <STRONG><A HREF="#3.0">3.0</A> - Lo-Chip Instructions</STRONG><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#3.1">3.1</A> - Standard Lo-Chip Instructions<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E0">$E0</A> - CLS<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$EE">$EE</A> - RET<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$10">$10</A> - JP <EM>addr</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$20">$20</A> - CALL <EM>addr</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$30">$30</A> - JE Rx, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$31">$31</A> - JNE Rx, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$50">$50</A> - JE Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$51">$51</A> - JNE Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$60">$60</A> - LD Rx, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$61">$61</A> - LD Ry, <EM>b1</EM><BR>
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$62">$62</A> - LDM Rx, I<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$63">$63</A> - LDM Ry, I<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$64">$64</A> - LDM I, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$65">$65</A> - LDM I, Ry<BR>
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$70">$70</A> - ADD Rx, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$71">$71</A> - ADD Ry, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$80">$80</A> - LD Rx, [Ry]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$8A">$8A</A> - LD Ry, [Rx]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$81">$81</A> - OR Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$82">$82</A> - AND Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$83">$83</A> - XOR Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$84">$84</A> - ADD Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$85">$85</A> - SUB Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$86">$86</A> - SHR Rx, 1<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$87">$87</A> - SUBN Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$8E">$8E</A> - SHL Rx, 1<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A0">$A0</A> - LD I, <EM>addr</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A1">$A1</A> - LD I, [RxRy]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$B0">$B0</A> - JP Rx, <EM>addr</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$C0">$C0</A> - RND Rx, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D0">$D0</A> - DRW Rx, Ry, <EM>b1</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E1">$E1</A> - JKP Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E2">$E2</A> - JKNP Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F1">$F1</A> - LD Rx, DT<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F2">$F2</A> - LD Rx, K<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F3">$F3</A> - LD DT, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F4">$F4</A> - LD ST, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FA">$FA</A> - ADD I, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FB">$FB</A> - LD F, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FC">$FC</A> - LD B, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FD">$FD</A> - LD [I], Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FE">$FE</A> - LD Rx, Ry, [I]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D1">$D1</A> - DRW Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$AA">$AA</A> - EXIT<BR>
+
+    <BR>
+    <STRONG><A HREF="#4.0">4.0</A> - Credits</STRONG><BR>
+
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="0.1">0.1</A> - Using This Document&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    While creating this document, I took every effort to try to make it easy to read, as
+    well as easy to find what you're looking for.<BR>
+    <BR>
+    In most cases, where a hexadecimal value is given, it is followed by the equivalent
+    decimal value in parenthesis. For example, "0x200 (512)."<BR>
+    <BR>
+    In most cases, when a word or letter is italicized, it is referring to a variable
+    value, for example, if I write "<EM>b1</EM>" it refers to a byte value defined by an instruction.<BR>
+    <BR>
+    If I write mem(<EM>x</EM>) a value is Memory at the address = x is meant.<BR>
+    <BR>
+    Opcodes are tagged with a '$'-sign. For example, $E0 - CLS.<BR>
+    <BR>
+    The most important thing to remember as you read this document is that every <A HREF="#0.0">[TOC]</A>
+    link will take you back to the Table Of Contents. <BR>
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=4><STRONG><EM><U>
+    <A NAME="1.0">1.0</A> - About Lo-Chip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    The Lo-Chip is my attempt to develop an own virtual machine.
+    After I learned a little bit about emulators I thought it would be a cool Idea
+    to develop my own system.<BR>
+    The main Idea of the Lo-Chip comes from the Chip-8. Chip-8 is a interpreted, 8-bit style, programming language
+    which was first used on some do-it-yourself computer systems in the late 1970s and early 1980s.
+    The Chip-8 is only capable of holding 4kB of Memory and has a 64x32 pixel wide monochrome display.
+    Therefore it is very simple and not capable of running larger projects.<BR>
+    The Lo-Chip aims to push the boundaries a little bit. It is capable of holding up to 64kB of memory and has a
+    variable display size which is normally 280×192 pixel. It can also hold different colors per pixel.
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=4><STRONG><EM><U>
+    <A NAME="2.0">2.0</A> - Lo-Chip Specifications&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    This section describes the Lo-Chip memory, registers, display, keyboard, and timers.<BR>
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="2.1">2.1</A> - Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    The Lo-Chip language is capable of accessing up to 64KB (65,536 bytes) of RAM, from
+    location 0x0000 (0) to 0xFFFF (65,535). The first 512 bytes, from 0x0000 to 0x1FF, are
+    reserved for things like the system font, and should not be used by programs.<BR>
+    <BR>
+    Most Lo-Chip programs start at location 0x200 (512).<BR>
+    <BR>
+    <STRONG><A NAME="memmap" style="">Memory</A> Map:</STRONG><BR>
+    +---------------+= 0xFFFF (65535) End of Chip-8 RAM<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |0x2000 to 0xFFF|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lo-Chip&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;Program / Data|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
+    +---------------+= 0x0200 (512) Start of Lo-Chip programs<BR>
+    |0x000 to 0x01FF|<BR>
+    |&nbsp;Reserved for&nbsp;&nbsp;|<BR>
+    |&nbsp;&nbsp;interpreter&nbsp;&nbsp;|<BR>
+    +---------------+= 0x0000 (0) Start of Lo-Chip RAM<BR>
+
+
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="2.2">2.2</A> - Registers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    Lo-Chip has two general purpose 8-bit registers, usually referred to as
+    Rx and Ry. Beside them there is a Index register called I.
+    This register is generally used to store memory addresses.<BR>
+    <BR>
+    There is also a binary register called F. It is used as flag by some instructions and
+    can only hold the values true or false (1 or 0).
+    See section 3.0, <A HREF="#3.0">Instructions</A>
+    for details.<BR>
+    <BR>
+    Lo-Chip also has two special purpose 8-bit registers, for the delay and sound timers.
+    When these registers are non-zero, they are automatically decremented at a rate
+    of 60Hz. See the section 2.5, <A HREF="#2.5">Timers & Sound</A>, for more
+    information on these.<BR>
+    <BR>
+    There are also some "pseudo-registers" which are not accessable from Lo-Chip
+    programs. The program counter (PC) should be 16-bit, and is used to store the
+    currently executing address. The stack pointer (SP) can be 8-bit, it is used to
+    point to the topmost level of the stack.<BR>
+    <BR>
+    The stack is an array of 256 16-bit values, used to store the address that
+    the interpreter shoud return to when finished with a subroutine. Lo-Chip allows
+    for up to 256 levels of nested subroutines.<BR>
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="2.3">2.3</A> - Keyboard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    <A NAME="keyboard">The</A> Lo-Chip has a very simple 16-key hexadecimal keypad with the following layout:<BR>
+    <BR>
+    <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0 ALIGN=center>
+        <TR>
+            <TD><TT>1</TT></TD>
+            <TD><TT>2</TT></TD>
+            <TD><TT>3</TT></TD>
+            <TD><TT>C</TT></TD>
+        </TR>
+        <TR>
+            <TD><TT>4</TT></TD>
+            <TD><TT>5</TT></TD>
+            <TD><TT>6</TT></TD>
+            <TD><TT>D</TT></TD>
+        </TR>
+        <TR>
+            <TD><TT>7</TT></TD>
+            <TD><TT>8</TT></TD>
+            <TD><TT>9</TT></TD>
+            <TD><TT>E</TT></TD>
+        </TR>
+        <TR>
+            <TD><TT>A</TT></TD>
+            <TD><TT>0</TT></TD>
+            <TD><TT>B</TT></TD>
+            <TD><TT>F</TT></TD>
+        </TR>
+    </TABLE>
+    <BR>
+    This layout must be mapped into various other configurations to fit the keyboards
+    of today's platforms.<BR>
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="2.4">2.4</A> - Display&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    <A NAME="dispcoords">This</A> implementation of the Lo-Chip normally uses a 256x144 pixel wide display:<BR>
+    <BR>
+    <TABLE BORDER=1 WIDTH=128 HEIGHT=64 CELLPADDING=0 CELLSPACING=0 ALIGN=center>
+        <TR>
+            <TD>
+                <TABLE BORDER=0 HEIGHT=60 WIDTH=100%>
+                    <TR>
+                        <TD VALIGN=top ALIGN=left>(0,0)</TD>
+                        <TD VALIGN=top ALIGN=right>(255,0)</TD>
+                    </TR>
+                    <TR>
+                        <TD VALIGN=bottom ALIGN=left>(0,143)</TD>
+                        <TD VALIGN=bottom ALIGN=right>(255,143)</TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+    </TABLE>
+    <BR>
+    Lo-Chip draws graphics on screen similar to the Chip-8 through the use of sprites. A sprite is a group
+    of bytes which are a binary representation of the desired picture. Lo-Chip sprites
+    may be up to 15 bytes, for a possible sprite size of 8x15.<BR>
+    <BR>
+    Programs may also refer to a group of sprites representing the hexadecimal
+    digits 0 through F. These sprites are 5 bytes long, or 8x5 pixels. The data
+    should be stored in the reserved area of Lo-Chip memory (0x000 to 0x1FF).
+    Below is a listing of each character's bytes, in binary and hexadecimal:<BR>
+    <BR>
+    <A NAME="font">&nbsp;</A>
+    <TABLE ALIGN=center>
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"0"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10010000<BR>
+                            10010000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x90<BR>
+                            0x90<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"1"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            &nbsp;&nbsp;*&nbsp;<BR>
+                            &nbsp;**&nbsp;<BR>
+                            &nbsp;&nbsp;*&nbsp;<BR>
+                            &nbsp;&nbsp;*&nbsp;<BR>
+                            &nbsp;***<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            00100000<BR>
+                            01100000<BR>
+                            00100000<BR>
+                            00100000<BR>
+                            01110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0x20<BR>
+                            0x60<BR>
+                            0x20<BR>
+                            0x20<BR>
+                            0x70<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"2"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            00010000<BR>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x10<BR>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"3"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            00010000<BR>
+                            11110000<BR>
+                            00010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x10<BR>
+                            0xF0<BR>
+                            0x10<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"4"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            10010000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                            00010000<BR>
+                            00010000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0x90<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                            0x10<BR>
+                            0x10<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"5"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                            00010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                            0x10<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"6"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"7"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            &nbsp;&nbsp;*&nbsp;<BR>
+                            &nbsp;*&nbsp;&nbsp;<BR>
+                            &nbsp;*&nbsp;&nbsp;<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            00010000<BR>
+                            00100000<BR>
+                            01000000<BR>
+                            01000000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x10<BR>
+                            0x20<BR>
+                            0x40<BR>
+                            0x40<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"8"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"9"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            &nbsp;&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                            00010000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                            0x10<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"A"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10010000<BR>
+                            11110000<BR>
+                            10010000<BR>
+                            10010000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x90<BR>
+                            0xF0<BR>
+                            0x90<BR>
+                            0x90<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"B"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ***&nbsp;<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ***&nbsp;<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ***&nbsp;<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11100000<BR>
+                            10010000<BR>
+                            11100000<BR>
+                            10010000<BR>
+                            11100000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xE0<BR>
+                            0x90<BR>
+                            0xE0<BR>
+                            0x90<BR>
+                            0xE0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"C"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10000000<BR>
+                            10000000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x80<BR>
+                            0x80<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"D"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ***&nbsp;<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            *&nbsp;&nbsp;*<BR>
+                            ***&nbsp;<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11100000<BR>
+                            10010000<BR>
+                            10010000<BR>
+                            10010000<BR>
+                            11100000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xE0<BR>
+                            0x90<BR>
+                            0x90<BR>
+                            0x90<BR>
+                            0xE0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+        <TR>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"E"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+            <TD>
+                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
+                    <TR>
+                        <TD>"F"</TD>
+                        <TD>Binary</TD>
+                        <TD>Hex</TD>
+                    </TR>
+                    <TR>
+                        <TD><TT>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            ****<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                            *&nbsp;&nbsp;&nbsp;<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            11110000<BR>
+                            10000000<BR>
+                            11110000<BR>
+                            10000000<BR>
+                            10000000<BR>
+                        </TT></TD>
+                        <TD><TT>
+                            0xF0<BR>
+                            0x80<BR>
+                            0xF0<BR>
+                            0x80<BR>
+                            0x80<BR>
+                        </TT></TD>
+                    </TR>
+                </TABLE>
+            </TD>
+        </TR>
+
+    </TABLE>
+</FONT></TT>
+<BR>
+<BR>
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="2.5">2.5</A> - Timers & Sound&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    Lo-Chip provides 2 timers, a delay timer and a sound timer.<BR>
+    <BR>
+    The delay timer is active whenever the delay timer register (DT) is non-zero.
+    This timer does nothing more than subtract 1 from the value of DT at a rate
+    of 1kHz. When DT reaches 0, it deactivates.<BR>
+    <BR>
+    The sound timer is active whenever the sound timer register (ST) is non-zero.
+    This timer also decrements at a rate of 1kHz, however, as long as ST's value is
+    greater than zero, the Lo-Chip buzzer will sound. When ST reaches zero, the sound
+    timer deactivates.<BR>
+    <BR>
+    The sound produced by the Lo-Chip interpreter has only one tone. The frequency
+    of this tone is decided by the author of the interpreter.<BR>
+</FONT></TT>
+<BR>
+<BR>
+
+<FONT SIZE=4><STRONG><EM><U>
+    <A NAME="3.0">3.0</A> - Lo-Chip Instructions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    This implementation of the Lo-Chip includes 39 different instructions,
+    including math, graphics, and flow control functions. It mostly mirrors the instructions of the Chip-8.
+    It also mirrors some instructions of the Super Chip-48, a advanced version of the Chip-8.<BR>
+    The main difference is that Lo-Chip uses opcodes to identify the instructions. Every
+    additional information is read from the first and second byte after the opcode.
+    The first byte of each instruction always represents an opcode, a defined value that identifies
+    the instruction.
+    <BR>
+    Every instruction has a defined size from 1 to 3 bytes.
+    The first byte in memory the program counter points to is always an opcode. Depending on the
+    instruction for the opcode the next two bytes are refered to as b1 and b2.
+    After ever instruction the program counter is always increased to the opcode of the nex instruction.
+    <BR>
+    <BR>
+    In these listings, the following variables are used:<BR>
+    <BR>
+    <EM>b1</EM> - The second byte in the instruction<BR>
+    <EM>b2</EM> - The third byte in the instruction<BR>
+</FONT></TT>
+<BR>
+<BR>
+<FONT SIZE=3><STRONG><EM><U>
+    <A NAME="3.1">3.1</A> - Standard Lo-Chip Instructions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    <STRONG><A NAME="$E0">$E0</A> - CLS</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Clear the display.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$EE">$EE</A> - RET</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Return from a subroutine.<BR>
+    <BR>
+    The interpreter sets the program counter to the address at the top of the
+    stack, then subtracts 1 from the stack pointer.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$10">$10</A> - JP <EM><EM>addr</EM></EM></STRONG><BR>
+    <I>bytes: 3</I><BR>
+    Jump to location <EM>b1b2</EM>.<BR>
+    <BR>
+    The interpreter sets the program counter to <EM>b1b2</EM>.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$20">$20</A> - CALL <EM>addr</EM></STRONG><BR>
+    <I>bytes: 3</I><BR>
+    Call subroutine at <EM>b1b2</EM>.<BR>
+    <BR>
+    The interpreter increments the stack pointer, then puts the current PC on
+    the top of the stack. The PC is then set to <EM>b1b2</EM>.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$30">$30</A> - JE Rx, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Jump to location I if Rx = <EM>b1</EM>.<BR>
+    <BR>
+    The interpreter compares register Rx to <EM>b1</EM>, and if they are
+    equal, sets the program counter to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$31">$31</A> - JNE Rx, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Jump to location I if Rx != <EM>b1</EM>.<BR>
+    <BR>
+    The interpreter compares register Rx to <EM>b1</EM>, and if they are
+    not equal, sets the program counter to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$50">$50</A> - JE Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Jump to location I if Rx = Ry.<BR>
+    <BR>
+    The interpreter compares register Rx to register Ry, and if
+    they are equal, sets the program counter to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$51">$51</A> - JNE Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Jump to location I if Rx != Ry.<BR>
+    <BR>
+    The interpreter compares register Rx to register Ry, and if
+    they are not equal, sets the program counter to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$60">$60</A> - LD Rx, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set Rx = <EM>b1</EM>.<BR>
+    <BR>
+    The interpreter puts the value <EM>b1</EM> into register Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$61">$61</A> - LD Ry, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set Ry = <EM>b1</EM>.<BR>
+    <BR>
+    The interpreter puts the value <EM>b1</EM> into register Ry.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$62">$62</A> - LDM Rx, I</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = mem(I).<BR>
+    <BR>
+    The interpreter puts the value mem(I) into register Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$63">$63</A> - LDM Ry, I</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Ry = mem(I).<BR>
+    <BR>
+    The interpreter puts the value mem(I) into register Ry.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$64">$64</A> - LDM I, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set mem(I) = Rx.<BR>
+    <BR>
+    The interpreter puts the register Rx into mem(I).<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$65">$65</A> - LDM I, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set mem(I) = Ry.<BR>
+    <BR>
+    The interpreter puts the register Ry into mem(I).<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$70">$70</A> - ADD Rx, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set Rx = Rx + <EM>b1</EM>.<BR>
+    <BR>
+    Adds the value <EM>b1</EM> to the value of register Rx, then stores the result in Rx.
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$71">$71</A> - ADD Ry, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set Ry = Ry + <EM>b1</EM>.<BR>
+    <BR>
+    Adds the value <EM>b1</EM> to the value of register Ry, then stores the result in Ry.
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$80">$80</A> - LD Rx, [Ry]</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Ry.<BR>
+    <BR>
+    Stores the value of register Ry in register Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$8A">$8A</A> - LD Ry, [Rx]</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Ry = Rx.<BR>
+    <BR>
+    Stores the value of register Rx in register Ry.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$81">$81</A> - OR Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Rx OR Ry.<BR>
+    <BR>
+    Performs a bitwise OR on the values of Rx and Ry, then stores the result in Rx. A
+    bitwise OR compares the corrseponding bits from two values, and if either bit
+    is 1, then the same bit in the result is also 1. Otherwise, it is 0. <BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$82">$82</A> - AND Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Rx AND Ry.<BR>
+    <BR>
+    Performs a bitwise AND on the values of Rx and Ry, then stores the result in Rx. A
+    bitwise AND compares the corrseponding bits from two values, and if both bits
+    are 1, then the same bit in the result is also 1. Otherwise, it is 0. <BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$83">$83</A> - XOR Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Rx XOR Ry.<BR>
+    <BR>
+    Performs a bitwise exclusive OR on the values of Rx and Ry, then stores the
+    result in Rx. An exclusive OR compares the corrseponding bits from two values,
+    and if the bits are not both the same, then the corresponding bit in the result
+    is set to 1. Otherwise, it is 0. <BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$84">$84</A> - ADD Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Rx + Ry, set F = carry.<BR>
+    <BR>
+    The values of Rx and Ry are added together. If the result is greater than 8 bits
+    (i.e., > 255,) F is set to 1, otherwise 0. Only the lowest 8 bits of the result
+    are kept, and stored in Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$85">$85</A> - SUB Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Rx - Ry, set F = NOT borrow.<BR>
+    <BR>
+    If Rx > Ry, then F is set to 1, otherwise 0. Then Ry is subtracted from Rx,
+    and the results stored in Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$86">$86</A> - SHR Rx, 1</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set F the leas-significant bit of Rx, then Rx SHR 1<BR>
+    <BR>
+    Shifts Rx by 1 bits to the right.
+    If a bit is shiftet out of Rx, then F is set to 1, otherwise to 0.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$87">$87</A> - SUBN Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = Ry - Rx, set F = NOT borrow.<BR>
+    <BR>
+    If Ry > Rx, then F is set to 1, otherwise 0. Then Rx is subtracted from Ry,
+    and the results stored in Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$8E">$8E</A> - SHL Rx, 1</STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set F the most-significant bit of Rx, then Rx SHL 1<BR>
+    <BR>
+    Shifts Rx by 1 bit to the left.
+    If a bit is shiftet out of Rx, then F is set to 1, otherwise to 0.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$A0">$A0</A> - LD I, <EM>addr</EM></STRONG><BR>
+    <I>bytes: 3</I><BR>
+    Set I = <EM>b1b2</EM>.<BR>
+    <BR>
+    The value of register I is set to <EM>b1b2</EM>.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$A1">$A1</A> - LD I, [RxRy]</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set I = <EM>RxRy</EM>.<BR>
+    <BR>
+    The value of register I is set to <EM>RxRy</EM>.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$B0">$B0</A> - JP Rx, <EM>addr</EM></STRONG><BR>
+    <I>bytes: 3</I><BR>
+    Jump to location <EM>b1b2</EM> + Rx.<BR>
+    <BR>
+    The program counter is set to <EM>b1b2</EM> plus the value of Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$C0">$C0</A> - RND Rx, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Set Rx = random <EM>byte</EM> AND <EM>b1</EM>.<BR>
+    <BR>
+    The interpreter generates a random number from 0 to 255, which is then ANDed
+    with the value b1. The results are stored in Rx. See instruction <A HREF="#$82">$82</A>
+    for more information on AND.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$D0">$D0</A> - DRW Rx, Ry, <EM>b1</EM></STRONG><BR>
+    <I>bytes: 2</I><BR>
+    Display <EM>b1</EM>-byte sprite starting at memory location I at (Rx, Ry), set F = collision.<BR>
+    <BR>
+    The interpreter reads <EM>b1</EM> bytes from memory, starting at the address stored in
+    I. These bytes are then displayed as sprites on screen at coordinates (Rx, Ry).
+    Sprites are XORed onto the existing screen. If this causes any pixels to be
+    erased, F is set to 1, otherwise it is set to 0. If the sprite is positioned
+    so part of it is outside the coordinates of the display, it wraps around to
+    the opposite side of the screen. See instruction <A HREF="#$83">$83</A> for
+    more information on XOR, and section 2.4, <A HREF="2.4">Display</A>, for
+    more information on the Lo-Chip screen and sprites.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$E1">$E1</A> - JKP Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Jump to location I if key with the value of Rx is pressed.<BR>
+    <BR>
+    Checks the keyboard, and if the key corresponding to the value of Rx is currently
+    in the down position, PC is set to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$E2">$E2</A> - JKNP Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Jump to location I if key with the value of Rx is not pressed.<BR>
+    <BR>
+    Checks the keyboard, and if the key corresponding to the value of Rx is currently
+    in the up position, PC is set to I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$F1">$F1</A> - LD Rx, DT</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set Rx = delay timer value.<BR>
+    <BR>
+    The value of DT is placed into Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$F2">$F2</A> - LD Rx, K</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Wait for a key press, store the value of the key in Rx.<BR>
+    <BR>
+    All execution stops until a key is pressed, then the value of that key
+    is stored in Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$F3">$F3</A> - LD DT, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set delay timer = Rx.<BR>
+    <BR>
+    DT is set equal to the value of Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$F4">$F4</A> - LD ST, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set sound timer = Rx.<BR>
+    <BR>
+    ST is set equal to the value of Rx.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$FA">$FA</A> - ADD I, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set I = I + Rx.<BR>
+    <BR>
+    The values of I and Rx are added, and the results are stored in I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$FB">$FB</A> - LD F, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Set I = location of sprite for digit Rx.<BR>
+    <BR>
+    The value of I is set to the location for the hexadecimal sprite corresponding to
+    the value of Rx. See section 2.4, <A HREF="#2.4">Display</A>, for more information
+    on the Lo-Chip hexadecimal font.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$FC">$FC</A> - LD B, Rx</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Store BCD representation of Rx in memory locations I, I+1, and I+2.<BR>
+    <BR>
+    The interpreter takes the decimal value of Rx, and places the hundreds
+    digit in memory at location in I, the tens digit at location I+1, and the
+    ones digit at location I+2.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$FD">$FD</A> - LD [I], Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Store registers Rx and Ry in memory starting at location I.<BR>
+    <BR>
+    The interpreter copies the values of registers Rx and Ry into memory,
+    starting at the address in I.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$FE">$FE</A> - LD Rx, Ry, [I]</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Read registers Rx and Ry from memory starting at location I.<BR>
+    <BR>
+    The interpreter reads values from memory starting at location I into registers
+    Rx and Ry.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$D1">$D1</A> - DRW Rx, Ry</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Display 16x16 sprite starting at memory location I at (Rx, Ry), set F = collision. <BR>
+    <BR>
+    The interpreter reads 32 bytes from memory, starting at the address stored in I.
+    These bytes are then displayed bit by bit from left to right starting at the first row
+    and beginning a new row after 16 bits. If this causes any pixels to be
+    erased, F is set to 1, otherwise it is set to 0. If the sprite is positioned
+    so part of it is outside the coordinates of the display, it wraps around to
+    the opposite side of the screen. See instruction <A HREF="#$83">$83</A> for
+    more information on XOR, and section 2.4, <A HREF="2.4">Display</A>, for
+    more information on the Lo-Chip screen and sprites.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$AA">$AA</A> - EXIT</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Exit the interpreter. <BR>
+    <BR>
+    The interpreter comes to an end and returns.<BR>
+    <BR>
+    <BR>
+    <BR>
+
+</FONT></TT>
+
+<BR>
+<BR>
+
+<FONT SIZE=4><STRONG><EM><U>
+    <A NAME="4.0">4.0</A> - Credits&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
+<BR>
+<TT><FONT SIZE=3>
+    This machine was developed by <A HREF="loiselloiselus@gmail.com">Loisel</A> aka Elias Taufer.<BR>
+    <A HREF="http://devernay.free.fr/hacks/chip8/C8TECH10.HTM">Cowgod's Chip-8 Technical Reference</A> was used as template for this document
+    what saved me lot of time.<BR>
+    <BR>
+</FONT></TT>
+<BR>
+<BR>
+<BR>
+<FONT SIZE=2><TT>August 29, 2022 18:00:00</TT></FONT>
+</BODY>
+</HTML>

@@ -1,0 +1,60 @@
+
+plugins {
+    id 'java'
+}
+
+group 'de.loisel.chip'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    implementation 'org.processing:core:3.3.7'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    mainClass = 'de.loisel.chip.Application'
+
+    // arguments to pass to the application
+    // args 'D:\\dev\\workspaces\\private\\chip8\\src\\main\\resources\\PONG'
+    args 'D:\\dev\\workspaces\\private\\chip8\\src\\main\\resources\\PONG'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'package.Main')
+    }
+}
+
+task runExecutableJar(type: JavaExec) {
+    // Executable jars can have only _one_ jar on the classpath.
+    classpath = files(tasks.jar)
+
+    // 'main' does not need to be specified
+
+    // arguments to pass to the application
+    args 'appArg1'
+}
