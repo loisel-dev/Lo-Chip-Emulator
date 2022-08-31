@@ -36,17 +36,12 @@
     <BR>
     <STRONG><A HREF="#2.0">2.0</A> - Lo-Chip Specifications</STRONG><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.1">2.1</A> - Memory<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#memmap">Diagram</A> - Memory
-    Map<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.2">2.2</A> - Registers<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.3">2.3</A> - Keyboard<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#keyboard">Diagram</A> - Keyboard
-    Layout<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#keyboard">Diagram</A> - Keyboard Layout<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.4">2.4</A> - Display<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#dispcoords">Diagram</A> - Display
-    Coordinates<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#font">Listing</A> - The Lo-Chip
-    Hexadecimal Font<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#dispcoords">Diagram</A> - Display Coordinates<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#font">Listing</A> - The Lo-Chip Hexadecimal Font<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#2.5">2.5</A> - Timers & Sound<BR>
     <BR>
     <STRONG><A HREF="#3.0">3.0</A> - Lo-Chip Instructions</STRONG><BR>
@@ -91,7 +86,6 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F3">$F3</A> - LD DT, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F4">$F4</A> - LD ST, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FA">$FA</A> - ADD I, Rx<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FB">$FB</A> - LD F, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FC">$FC</A> - LD B, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FD">$FD</A> - LD [I], Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FE">$FE</A> - LD Rx, Ry, [I]<BR>
@@ -142,7 +136,7 @@
     The Chip-8 is only capable of holding 4kB of Memory and has a 64x32 pixel wide monochrome display.
     Therefore it is very simple and not capable of running larger projects.<BR>
     The Lo-Chip aims to push the boundaries a little bit. It is capable of holding up to 64kB of memory and has a
-    variable display size which is normally 280×192 pixel. It can also hold different colors per pixel.
+    variable display size which goes up to 256x256 pixels.
 </FONT></TT>
 <BR>
 <BR>
@@ -163,33 +157,10 @@
 <BR>
 <TT><FONT SIZE=3>
     The Lo-Chip language is capable of accessing up to 64KB (65,536 bytes) of RAM, from
-    location 0x0000 (0) to 0xFFFF (65,535). The first 512 bytes, from 0x0000 to 0x1FF, are
-    reserved for things like the system font, and should not be used by programs.<BR>
+    location 0x0000 (0) to 0xFFFF (65,535). Only the first two bytes (0x0001 and 0x0002)
+    are reserved. They hold the resetvector, an address that is assigned
+    to the programcounter at the start of the machine.<BR>
     <BR>
-    Most Lo-Chip programs start at location 0x200 (512).<BR>
-    <BR>
-    <STRONG><A NAME="memmap" style="">Memory</A> Map:</STRONG><BR>
-    +---------------+= 0xFFFF (65535) End of Chip-8 RAM<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |0x2000 to 0xFFF|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lo-Chip&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;Program / Data|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>
-    +---------------+= 0x0200 (512) Start of Lo-Chip programs<BR>
-    |0x000 to 0x01FF|<BR>
-    |&nbsp;Reserved for&nbsp;&nbsp;|<BR>
-    |&nbsp;&nbsp;interpreter&nbsp;&nbsp;|<BR>
-    +---------------+= 0x0000 (0) Start of Lo-Chip RAM<BR>
 
 
 </FONT></TT>
@@ -219,10 +190,16 @@
     programs. The program counter (PC) should be 16-bit, and is used to store the
     currently executing address. The stack pointer (SP) can be 8-bit, it is used to
     point to the topmost level of the stack.<BR>
+    At every start of Lo-Chip the program counter gets it address from the first
+    two bytes in memory.<BR>
     <BR>
     The stack is an array of 256 16-bit values, used to store the address that
     the interpreter shoud return to when finished with a subroutine. Lo-Chip allows
     for up to 256 levels of nested subroutines.<BR>
+    The stack is seperate from the memory and only accessible by some instructions.
+    See section 3.0, <A HREF="#3.0">Instructions</A>
+    for details.<BR>
+    <BR>
 </FONT></TT>
 <BR>
 <BR>
@@ -272,7 +249,9 @@
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
 <TT><FONT SIZE=3>
-    <A NAME="dispcoords">This</A> implementation of the Lo-Chip normally uses a 256x144 pixel wide display:<BR>
+    Lo-Chip allows to address displays with up to 256x256 pixels.
+    The size of the display may vary between different implementations.<BR>
+    The standard implementation of the Lo-Chip normally uses a 256x144 pixel wide display:<BR>
     <BR>
     <TABLE BORDER=1 WIDTH=128 HEIGHT=64 CELLPADDING=0 CELLSPACING=0 ALIGN=center>
         <TR>
@@ -295,546 +274,7 @@
     of bytes which are a binary representation of the desired picture. Lo-Chip sprites
     may be up to 15 bytes, for a possible sprite size of 8x15.<BR>
     <BR>
-    Programs may also refer to a group of sprites representing the hexadecimal
-    digits 0 through F. These sprites are 5 bytes long, or 8x5 pixels. The data
-    should be stored in the reserved area of Lo-Chip memory (0x000 to 0x1FF).
-    Below is a listing of each character's bytes, in binary and hexadecimal:<BR>
-    <BR>
-    <A NAME="font">&nbsp;</A>
-    <TABLE ALIGN=center>
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"0"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10010000<BR>
-                            10010000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x90<BR>
-                            0x90<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"1"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            &nbsp;&nbsp;*&nbsp;<BR>
-                            &nbsp;**&nbsp;<BR>
-                            &nbsp;&nbsp;*&nbsp;<BR>
-                            &nbsp;&nbsp;*&nbsp;<BR>
-                            &nbsp;***<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            00100000<BR>
-                            01100000<BR>
-                            00100000<BR>
-                            00100000<BR>
-                            01110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0x20<BR>
-                            0x60<BR>
-                            0x20<BR>
-                            0x20<BR>
-                            0x70<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"2"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            00010000<BR>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x10<BR>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"3"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            00010000<BR>
-                            11110000<BR>
-                            00010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x10<BR>
-                            0xF0<BR>
-                            0x10<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
 
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"4"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            10010000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                            00010000<BR>
-                            00010000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0x90<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                            0x10<BR>
-                            0x10<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"5"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                            00010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                            0x10<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"6"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"7"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            &nbsp;&nbsp;*&nbsp;<BR>
-                            &nbsp;*&nbsp;&nbsp;<BR>
-                            &nbsp;*&nbsp;&nbsp;<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            00010000<BR>
-                            00100000<BR>
-                            01000000<BR>
-                            01000000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x10<BR>
-                            0x20<BR>
-                            0x40<BR>
-                            0x40<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"8"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"9"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            &nbsp;&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                            00010000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                            0x10<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"A"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10010000<BR>
-                            11110000<BR>
-                            10010000<BR>
-                            10010000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x90<BR>
-                            0xF0<BR>
-                            0x90<BR>
-                            0x90<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"B"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ***&nbsp;<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ***&nbsp;<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ***&nbsp;<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11100000<BR>
-                            10010000<BR>
-                            11100000<BR>
-                            10010000<BR>
-                            11100000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xE0<BR>
-                            0x90<BR>
-                            0xE0<BR>
-                            0x90<BR>
-                            0xE0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"C"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10000000<BR>
-                            10000000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x80<BR>
-                            0x80<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"D"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ***&nbsp;<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            *&nbsp;&nbsp;*<BR>
-                            ***&nbsp;<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11100000<BR>
-                            10010000<BR>
-                            10010000<BR>
-                            10010000<BR>
-                            11100000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xE0<BR>
-                            0x90<BR>
-                            0x90<BR>
-                            0x90<BR>
-                            0xE0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-        <TR>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"E"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-            <TD>
-                <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0>
-                    <TR>
-                        <TD>"F"</TD>
-                        <TD>Binary</TD>
-                        <TD>Hex</TD>
-                    </TR>
-                    <TR>
-                        <TD><TT>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            ****<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                            *&nbsp;&nbsp;&nbsp;<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            11110000<BR>
-                            10000000<BR>
-                            11110000<BR>
-                            10000000<BR>
-                            10000000<BR>
-                        </TT></TD>
-                        <TD><TT>
-                            0xF0<BR>
-                            0x80<BR>
-                            0xF0<BR>
-                            0x80<BR>
-                            0x80<BR>
-                        </TT></TD>
-                    </TR>
-                </TABLE>
-            </TD>
-        </TR>
-
-    </TABLE>
 </FONT></TT>
 <BR>
 <BR>
@@ -866,17 +306,17 @@
 <BR>
 <TT><FONT SIZE=3>
     This implementation of the Lo-Chip includes 39 different instructions,
-    including math, graphics, and flow control functions. It mostly mirrors the instructions of the Chip-8.
-    It also mirrors some instructions of the Super Chip-48, a advanced version of the Chip-8.<BR>
+    including math, graphics, and flow control functions. It mostly inherited the instructions of the Chip-8.
+    It also has some instructions of the Super Chip-48, a advanced version of the Chip-8.<BR>
     The main difference is that Lo-Chip uses opcodes to identify the instructions. Every
-    additional information is read from the first and second byte after the opcode.
-    The first byte of each instruction always represents an opcode, a defined value that identifies
-    the instruction.
+    additional information is read from the first and second byte after the opcode and therefore
+    Chip-8 programs are not compatible with Lo-Chip.<BR>
     <BR>
-    Every instruction has a defined size from 1 to 3 bytes.
-    The first byte in memory the program counter points to is always an opcode. Depending on the
-    instruction for the opcode the next two bytes are refered to as b1 and b2.
-    After ever instruction the program counter is always increased to the opcode of the nex instruction.
+    Every instruction has a defined size from 1 to 3 bytes.<BR>
+    The first byte of each instruction always represents an opcode, a defined value that identifies
+    the instruction.<BR>
+    Depending on the instruction the next two bytes are refered to as b1 and b2.
+    After every instruction the program counter is always increased to the opcode of the nex instruction.
     <BR>
     <BR>
     In these listings, the following variables are used:<BR>
@@ -1221,16 +661,6 @@
     Set I = I + Rx.<BR>
     <BR>
     The values of I and Rx are added, and the results are stored in I.<BR>
-    <BR>
-    <BR>
-
-    <STRONG><A NAME="$FB">$FB</A> - LD F, Rx</STRONG><BR>
-    <I>bytes: 1</I><BR>
-    Set I = location of sprite for digit Rx.<BR>
-    <BR>
-    The value of I is set to the location for the hexadecimal sprite corresponding to
-    the value of Rx. See section 2.4, <A HREF="#2.4">Display</A>, for more information
-    on the Lo-Chip hexadecimal font.<BR>
     <BR>
     <BR>
 

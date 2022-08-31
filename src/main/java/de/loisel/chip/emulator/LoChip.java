@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Random;
 
 public class LoChip implements Runnable{
-    public  static short PC_START = 0x200;
-
     Random rand;
     private boolean isRunning;
     private long remainInstr = Long.MAX_VALUE;
@@ -49,7 +47,7 @@ public class LoChip implements Runnable{
         this.memory = new Memory();
         this.stack = new Stack();
 
-        this.programCounter = PC_START;
+        this.programCounter = 0;
         this.indexReg = 0;
         this.delayTimer = 0;
         this.soundTimer = 0;
@@ -66,11 +64,11 @@ public class LoChip implements Runnable{
     }
 
     public synchronized void loadProgram(Program program) {
-        this.programCounter = PC_START;
         byte[] rawProgram = program.getProgram();
         for (int i = programCounter; i < (programCounter + rawProgram.length); i++) {
             memory.write((short)i, rawProgram[i - programCounter]);
         }
+        this.programCounter = memory.fetchWord((short) 0);
     }
 
     public synchronized boolean isSound() {
@@ -249,9 +247,6 @@ public class LoChip implements Runnable{
         );
         instructionMap.put(0xFA, () ->          // $FA - ADD I, Rx
                 indexReg += rX
-        );
-        instructionMap.put(0xFB, () ->          // $FB - LD F, Rx
-                indexReg = (short) (memory.font() + rX * Memory.FONT_SIZE)
         );
         instructionMap.put(0xFC, () -> {        // $FC - LD B, Rx
             int num = Byte.toUnsignedInt(rX);

@@ -18,19 +18,11 @@ package de.loisel.chip.emulator;
 
 public class Memory {
     public static final int MEMORY_SIZE = 0x10000;
-    public static final int FONT_SIZE = 5;
 
     private byte[] data;
-    private final short fontOffset;
 
     public Memory() {
-        this((short) 0x050);
-    }
-
-    public Memory(short fontOffset) {
         this.data = new byte[MEMORY_SIZE];
-        this.fontOffset = fontOffset;
-        this.writeFonts();
     }
 
     public byte fetch(short address) {
@@ -51,38 +43,15 @@ public class Memory {
         this.data[addr] = data;
     }
 
-    private void writeFonts() {
-        int[] font = {
-                0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
-                0x20, 0x60, 0x20, 0x20, 0x70, // 1
-                0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
-                0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
-                0x90, 0x90, 0xF0, 0x10, 0x10, // 4
-                0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
-                0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
-                0xF0, 0x10, 0x20, 0x40, 0x40, // 7
-                0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
-                0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
-                0xF0, 0x90, 0xF0, 0x90, 0x90, // A
-                0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
-                0xF0, 0x80, 0x80, 0x80, 0xF0, // C
-                0xE0, 0x90, 0x90, 0x90, 0xE0, // D
-                0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-                0xF0, 0x80, 0xF0, 0x80, 0x80, // F
-        };
-
-        for(int i = 0; i < font.length; i++) {
-            data[fontOffset + i] = (byte) font[i];
-        }
-    }
-
     public void reset() {
         this.data = new byte[MEMORY_SIZE];
-        this.writeFonts();
     }
 
-    public short font() {
-        return fontOffset;
+    public short fetchWord(short address) {
+        if(address < data.length - 1)
+            return (short) ((data[address] << 8) | (data[address + 1] & 0xFF));
+        else
+            return 0;
     }
 
     public byte[] copyData() {
