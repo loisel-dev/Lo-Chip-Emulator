@@ -57,15 +57,15 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$60">$60</A> - LD Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$61">$61</A> - LD Ry, <EM>b1</EM><BR>
 
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$62">$62</A> - LDM Rx, I<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$63">$63</A> - LDM Ry, I<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$64">$64</A> - LDM I, Rx<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$65">$65</A> - LDM I, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$62">$62</A> - LD Rx, I<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$63">$63</A> - LD Ry, I<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$64">$64</A> - LD I, Rx<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$65">$65</A> - LD I, Ry<BR>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$70">$70</A> - ADD Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$71">$71</A> - ADD Ry, <EM>b1</EM><BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$80">$80</A> - LD Rx, [Ry]<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$8A">$8A</A> - LD Ry, [Rx]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$80">$80</A> - LD Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$8A">$8A</A> - LD Ry, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$81">$81</A> - OR Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$82">$82</A> - AND Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$83">$83</A> - XOR Rx, Ry<BR>
@@ -75,7 +75,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$87">$87</A> - SUBN Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$8E">$8E</A> - SHL Rx, 1<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A0">$A0</A> - LD I, <EM>addr</EM><BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A1">$A1</A> - LD I, [RxRy]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A1">$A1</A> - LD I, RxRy<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$B0">$B0</A> - JP Rx, <EM>addr</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$C0">$C0</A> - RND Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D0">$D0</A> - DRW Rx, Ry, <EM>b1</EM><BR>
@@ -87,8 +87,8 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F4">$F4</A> - LD ST, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FA">$FA</A> - ADD I, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FC">$FC</A> - LD B, Rx<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FD">$FD</A> - LD [I], Rx, Ry<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FE">$FE</A> - LD Rx, Ry, [I]<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FD">$FD</A> - LD I, Rx, Ry<BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FE">$FE</A> - LD Rx, Ry, I<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D1">$D1</A> - DRW Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$AA">$AA</A> - EXIT<BR>
 
@@ -415,7 +415,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$62">$62</A> - LDM Rx, I</STRONG><BR>
+    <STRONG><A NAME="$62">$62</A> - LD Rx, I</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set Rx = mem(I).<BR>
     <BR>
@@ -423,7 +423,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$63">$63</A> - LDM Ry, I</STRONG><BR>
+    <STRONG><A NAME="$63">$63</A> - LD Ry, I</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set Ry = mem(I).<BR>
     <BR>
@@ -431,7 +431,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$64">$64</A> - LDM I, Rx</STRONG><BR>
+    <STRONG><A NAME="$64">$64</A> - LD I, Rx</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set mem(I) = Rx.<BR>
     <BR>
@@ -439,7 +439,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$65">$65</A> - LDM I, Ry</STRONG><BR>
+    <STRONG><A NAME="$65">$65</A> - LD I, Ry</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set mem(I) = Ry.<BR>
     <BR>
@@ -463,7 +463,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$80">$80</A> - LD Rx, [Ry]</STRONG><BR>
+    <STRONG><A NAME="$80">$80</A> - LD Rx, Ry</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set Rx = Ry.<BR>
     <BR>
@@ -471,7 +471,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$8A">$8A</A> - LD Ry, [Rx]</STRONG><BR>
+    <STRONG><A NAME="$8A">$8A</A> - LD Ry, Rx</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set Ry = Rx.<BR>
     <BR>
@@ -564,7 +564,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$A1">$A1</A> - LD I, [RxRy]</STRONG><BR>
+    <STRONG><A NAME="$A1">$A1</A> - LD I, RxRy</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set I = <EM>RxRy</EM>.<BR>
     <BR>
@@ -674,7 +674,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$FD">$FD</A> - LD [I], Rx, Ry</STRONG><BR>
+    <STRONG><A NAME="$FD">$FD</A> - LD I, Rx, Ry</STRONG><BR>
     <I>bytes: 1</I><BR>
     Store registers Rx and Ry in memory starting at location I.<BR>
     <BR>
@@ -683,7 +683,7 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$FE">$FE</A> - LD Rx, Ry, [I]</STRONG><BR>
+    <STRONG><A NAME="$FE">$FE</A> - LD Rx, Ry, I</STRONG><BR>
     <I>bytes: 1</I><BR>
     Read registers Rx and Ry from memory starting at location I.<BR>
     <BR>

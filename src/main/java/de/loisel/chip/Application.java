@@ -128,7 +128,7 @@ public class Application extends PApplet {
     private void countFPS() {
         fCounter++;
         if(System.currentTimeMillis() > lastCount + 1000) {
-            System.out.println("FPS: " + fCounter);
+            // System.out.println("FPS: " + fCounter);
             fCounter = 0;
             lastCount = System.currentTimeMillis();
         }

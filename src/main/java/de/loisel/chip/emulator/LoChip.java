@@ -108,6 +108,11 @@ public class LoChip implements Runnable{
     }
 
     private void setUpInstructionMap() {
+        /*
+        Idea to increase speed:
+        create a Runnable Array for the instructions with 0xFF entries
+        and let the opcode be the index of the instruction.
+         */
         instructionMap.put(0xE0,                // $E0 - CLS
                 frameBuffer::clearBuffer
         );
@@ -148,16 +153,16 @@ public class LoChip implements Runnable{
         );
 
 
-        instructionMap.put(0x62, () ->          // $62 - LDM Rx, I
+        instructionMap.put(0x62, () ->          // $62 - LD Rx, I
                 rX = memory.fetch(indexReg)
         );
-        instructionMap.put(0x63, () ->          // $63 - LDM Ry, I
+        instructionMap.put(0x63, () ->          // $63 - LD Ry, I
                 rY = memory.fetch(indexReg)
         );
-        instructionMap.put(0x64, () ->          // $64 - LDM I, Rx
+        instructionMap.put(0x64, () ->          // $64 - LD I, Rx
                 memory.write(indexReg, rX)
         );
-        instructionMap.put(0x65, () ->          // $65 - LDM I, Ry
+        instructionMap.put(0x65, () ->          // $65 - LD I, Ry
                 memory.write(indexReg, rY)
         );
 
@@ -168,10 +173,10 @@ public class LoChip implements Runnable{
         instructionMap.put(0x71, () ->          // $71 - ADD Ry, b1
                 rY += fetchPC()
         );
-        instructionMap.put(0x80, () ->          // $80 - LD Rx, [Ry]
+        instructionMap.put(0x80, () ->          // $80 - LD Rx, Ry
                 rX = rY
         );
-        instructionMap.put(0x8A, () ->          // $8A - LD Ry, [Rx]
+        instructionMap.put(0x8A, () ->          // $8A - LD Ry, Rx
                 rY = rX
         );
         instructionMap.put(0x81, () ->          // $81 - OR Rx, Ry
@@ -206,7 +211,7 @@ public class LoChip implements Runnable{
         instructionMap.put(0xA0, () ->          // $A0 - LD I, addr
                 indexReg = fetchPCWord()
         );
-        instructionMap.put(0xA1, () -> {        // $A1 - LD I, [RxRy]
+        instructionMap.put(0xA1, () -> {        // $A1 - LD I, RxRy
             indexReg = (short) (rX << 8);
             indexReg |= rY;
         });
@@ -254,11 +259,11 @@ public class LoChip implements Runnable{
             memory.write((short) (indexReg + 1), (byte) ((num % 100) / 10));
             memory.write((short) (indexReg + 2), (byte) ((num % 100) % 10));
         });
-        instructionMap.put(0xFD, () -> {        // $FD - LD [I], Rx, Ry
+        instructionMap.put(0xFD, () -> {        // $FD - LD I, Rx, Ry
             memory.write(indexReg, rX);
             memory.write((short) (indexReg + 1), rY);
         });
-        instructionMap.put(0xFE, () -> {        // $FE - LD Rx, Ry, [I]
+        instructionMap.put(0xFE, () -> {        // $FE - LD Rx, Ry, I
             rX = memory.fetch(indexReg);
             rY = memory.fetch((short) (indexReg + 1));
         });
