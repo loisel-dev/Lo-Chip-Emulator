@@ -122,6 +122,10 @@ public class LoChip implements Runnable{
         instructionMap.put(0x10, () ->          // $10 - JP addr
                 programCounter = fetchPCWord()
         );
+        instructionMap.put(0x11, () -> {        // $11 - JP I, F
+            if(f)
+                programCounter = indexReg;
+        });
         instructionMap.put(0x20, () -> {        // $20 - CALL addr
             short dest = fetchPCWord();
             stack.push(programCounter);

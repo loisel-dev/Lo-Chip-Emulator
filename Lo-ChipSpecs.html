@@ -49,6 +49,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E0">$E0</A> - CLS<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$EE">$EE</A> - RET<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$10">$10</A> - JP <EM>addr</EM><BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$11">$11</A> - JP I, F<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$20">$20</A> - CALL <EM>addr</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$30">$30</A> - JE Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$31">$31</A> - JNE Rx, <EM>b1</EM><BR>
@@ -346,11 +347,19 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$10">$10</A> - JP <EM><EM>addr</EM></EM></STRONG><BR>
+    <STRONG><A NAME="$10">$10</A> - JP <EM>addr</EM></STRONG><BR>
     <I>bytes: 3</I><BR>
     Jump to location <EM>b1b2</EM>.<BR>
     <BR>
     The interpreter sets the program counter to <EM>b1b2</EM>.<BR>
+    <BR>
+    <BR>
+
+    <STRONG><A NAME="$11">$11</A> - JP I, F</STRONG><BR>
+    <I>bytes: 1</I><BR>
+    Jump to location <EM>I</EM> if F is set.<BR>
+    <BR>
+    The interpreter sets the program counter to I when the flag register F is set.<BR>
     <BR>
     <BR>
 

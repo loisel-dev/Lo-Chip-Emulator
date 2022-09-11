@@ -17,11 +17,12 @@
 package de.loisel.chip.emulator;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-class InstructionTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SimpleProgramTest {
 
     private final LoChip chip;
     private final Keyboard keyboard;
@@ -29,7 +30,7 @@ class InstructionTest {
 
     String binPath;
 
-    InstructionTest() {
+    SimpleProgramTest() {
         String path = "src/test/resources";
 
         File file = new File(path);
@@ -42,30 +43,13 @@ class InstructionTest {
     }
 
     @Test
-    void clearDisplay() {
-        frameBuffer.setPixel(3, 3, (byte) 10);
-        byte[] rom = {
-                (byte) 0x00, (byte) 0x02,   // reset vector
-                (byte) 0xE0, (byte) 0xAA
-        };
-        chip.loadProgram(new Program(rom));
-        chip.run(2);
-        byte[][] buff = frameBuffer.copyBBuffer();
-        for (byte[] line: buff) {
-            for (byte b : line) {
-                assertEquals(0, b);
-            }
-        }
-    }
-
-    @Test
-    void jmpAndSubroutine() {
-        chip.loadProgram(new Program(binPath + "JmpSrt.bin"));
+    void simpleProgram() {
+        chip.loadProgram(new Program(binPath + "simple-program.bin"));
 
         chip.run(100);
 
         byte[] mem = chip.dumpMemory();
-        assertEquals(0x7F, mem[0x0040]);
+        assertEquals(0x41, mem[0x000A]);
     }
 
 }

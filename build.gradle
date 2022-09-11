@@ -40,7 +40,7 @@ task runApp(type: JavaExec) {
 
     // arguments to pass to the application
     // args 'D:\\dev\\workspaces\\private\\chip8\\src\\main\\resources\\PONG'
-    args 'D:\\dev\\workspaces\\lo-chip\\Lo-Chip-assembler\\testoutput\\simple-test.bin'
+    args 'D:\\dev\\workspaces\\lo-chip\\Lo-Chip-assembler\\testoutput\\16b-addFunction.bin'
 }
 
 jar {
