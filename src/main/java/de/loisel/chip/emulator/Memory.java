@@ -43,6 +43,12 @@ public class Memory {
         this.data[addr] = data;
     }
 
+    public void writeW(short address, short word) {
+        int addr = Short.toUnsignedInt(address);
+        this.data[addr] = (byte) (word >>> 8);
+        this.data[addr + 1] = (byte) (word & 0x00FF);
+    }
+
     public void reset() {
         this.data = new byte[MEMORY_SIZE];
     }

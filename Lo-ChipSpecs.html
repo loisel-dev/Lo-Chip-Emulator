@@ -21,14 +21,14 @@
 <BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" ALINK="#00007F" VLINK="#7F7F7F">
 <CENTER>
     Loisel's<BR>
-    <FONT SIZE=7><STRONG><TT>Lo-Chip</TT></STRONG></FONT><BR>
+    <FONT SIZE=9><STRONG><TT>Lo-Chip</TT></STRONG></FONT><BR>
 </CENTER>
 <BR>
-<FONT SIZE=4><STRONG><EM><U>
+<FONT SIZE=6><STRONG><EM><U>
     <A NAME="0.0">0.0</A> - Table of Contents&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
 </U></EM></STRONG></FONT>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     <STRONG><A HREF="#0.0">0.0</A> - Table of Contents</STRONG><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#0.1">0.1</A> - Using This Document<BR>
     <BR>
@@ -46,7 +46,6 @@
     <BR>
     <STRONG><A HREF="#3.0">3.0</A> - Lo-Chip Instructions</STRONG><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#3.1">3.1</A> - Standard Lo-Chip Instructions<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E0">$E0</A> - CLS<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$EE">$EE</A> - RET<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$10">$10</A> - JP <EM>addr</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$11">$11</A> - JP I, F<BR>
@@ -57,12 +56,10 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$51">$51</A> - JNE Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$60">$60</A> - LD Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$61">$61</A> - LD Ry, <EM>b1</EM><BR>
-
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$62">$62</A> - LD Rx, I<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$63">$63</A> - LD Ry, I<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$64">$64</A> - LD I, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$65">$65</A> - LD I, Ry<BR>
-
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$70">$70</A> - ADD Rx, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$71">$71</A> - ADD Ry, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$80">$80</A> - LD Rx, Ry<BR>
@@ -79,18 +76,15 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$A1">$A1</A> - LD I, RxRy<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$B0">$B0</A> - JP Rx, <EM>addr</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$C0">$C0</A> - RND Rx, <EM>b1</EM><BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D0">$D0</A> - DRW Rx, Ry, <EM>b1</EM><BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E1">$E1</A> - JKP Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$E2">$E2</A> - JKNP Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F1">$F1</A> - LD Rx, DT<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F2">$F2</A> - LD Rx, K<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F3">$F3</A> - LD DT, Rx<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$F4">$F4</A> - LD ST, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FA">$FA</A> - ADD I, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FC">$FC</A> - LD B, Rx<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FD">$FD</A> - LD I, Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$FE">$FE</A> - LD Rx, Ry, I<BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$D1">$D1</A> - DRW Rx, Ry<BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#$AA">$AA</A> - EXIT<BR>
 
     <BR>
@@ -100,11 +94,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="0.1">0.1</A> - Using This Document&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     While creating this document, I took every effort to try to make it easy to read, as
     well as easy to find what you're looking for.<BR>
     <BR>
@@ -124,11 +118,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=4><STRONG><EM><U>
+<FONT SIZE=6><STRONG><EM><U>
     <A NAME="1.0">1.0</A> - About Lo-Chip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     The Lo-Chip is my attempt to develop an own virtual machine.
     After I learned a little bit about emulators I thought it would be a cool Idea
     to develop my own system.<BR>
@@ -142,21 +136,21 @@
 <BR>
 <BR>
 
-<FONT SIZE=4><STRONG><EM><U>
+<FONT SIZE=6><STRONG><EM><U>
     <A NAME="2.0">2.0</A> - Lo-Chip Specifications&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     This section describes the Lo-Chip memory, registers, display, keyboard, and timers.<BR>
 </FONT></TT>
 <BR>
 <BR>
 
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="2.1">2.1</A> - Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     The Lo-Chip language is capable of accessing up to 64KB (65,536 bytes) of RAM, from
     location 0x0000 (0) to 0xFFFF (65,535). Only the first two bytes (0x0001 and 0x0002)
     are reserved. They hold the resetvector, an address that is assigned
@@ -168,11 +162,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="2.2">2.2</A> - Registers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     Lo-Chip has two general purpose 8-bit registers, usually referred to as
     Rx and Ry. Beside them there is a Index register called I.
     This register is generally used to store memory addresses.<BR>
@@ -205,11 +199,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="2.3">2.3</A> - Keyboard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     <A NAME="keyboard">The</A> Lo-Chip has a very simple 16-key hexadecimal keypad with the following layout:<BR>
     <BR>
     <TABLE BORDER=1 CELLPADDING=3 CELLSPACING=0 ALIGN=center>
@@ -245,11 +239,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="2.4">2.4</A> - Display&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     Lo-Chip allows to address displays with up to 256x256 pixels.
     The size of the display may vary between different implementations.<BR>
     The standard implementation of the Lo-Chip normally uses a 256x144 pixel wide display:<BR>
@@ -279,11 +273,11 @@
 </FONT></TT>
 <BR>
 <BR>
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="2.5">2.5</A> - Timers & Sound&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     Lo-Chip provides 2 timers, a delay timer and a sound timer.<BR>
     <BR>
     The delay timer is active whenever the delay timer register (DT) is non-zero.
@@ -301,11 +295,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=4><STRONG><EM><U>
+<FONT SIZE=6><STRONG><EM><U>
     <A NAME="3.0">3.0</A> - Lo-Chip Instructions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     This implementation of the Lo-Chip includes 39 different instructions,
     including math, graphics, and flow control functions. It mostly inherited the instructions of the Chip-8.
     It also has some instructions of the Super Chip-48, a advanced version of the Chip-8.<BR>
@@ -327,17 +321,11 @@
 </FONT></TT>
 <BR>
 <BR>
-<FONT SIZE=3><STRONG><EM><U>
+<FONT SIZE=5><STRONG><EM><U>
     <A NAME="3.1">3.1</A> - Standard Lo-Chip Instructions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
-    <STRONG><A NAME="$E0">$E0</A> - CLS</STRONG><BR>
-    <I>bytes: 1</I><BR>
-    Clear the display.<BR>
-    <BR>
-    <BR>
-
+<TT><FONT SIZE=5>
     <STRONG><A NAME="$EE">$EE</A> - RET</STRONG><BR>
     <I>bytes: 1</I><BR>
     Return from a subroutine.<BR>
@@ -657,14 +645,6 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$F4">$F4</A> - LD ST, Rx</STRONG><BR>
-    <I>bytes: 1</I><BR>
-    Set sound timer = Rx.<BR>
-    <BR>
-    ST is set equal to the value of Rx.<BR>
-    <BR>
-    <BR>
-
     <STRONG><A NAME="$FA">$FA</A> - ADD I, Rx</STRONG><BR>
     <I>bytes: 1</I><BR>
     Set I = I + Rx.<BR>
@@ -701,21 +681,6 @@
     <BR>
     <BR>
 
-    <STRONG><A NAME="$D1">$D1</A> - DRW Rx, Ry</STRONG><BR>
-    <I>bytes: 1</I><BR>
-    Display 16x16 sprite starting at memory location I at (Rx, Ry), set F = collision. <BR>
-    <BR>
-    The interpreter reads 32 bytes from memory, starting at the address stored in I.
-    These bytes are then displayed bit by bit from left to right starting at the first row
-    and beginning a new row after 16 bits. If this causes any pixels to be
-    erased, F is set to 1, otherwise it is set to 0. If the sprite is positioned
-    so part of it is outside the coordinates of the display, it wraps around to
-    the opposite side of the screen. See instruction <A HREF="#$83">$83</A> for
-    more information on XOR, and section 2.4, <A HREF="2.4">Display</A>, for
-    more information on the Lo-Chip screen and sprites.<BR>
-    <BR>
-    <BR>
-
     <STRONG><A NAME="$AA">$AA</A> - EXIT</STRONG><BR>
     <I>bytes: 1</I><BR>
     Exit the interpreter. <BR>
@@ -730,11 +695,11 @@
 <BR>
 <BR>
 
-<FONT SIZE=4><STRONG><EM><U>
+<FONT SIZE=6><STRONG><EM><U>
     <A NAME="4.0">4.0</A> - Credits&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </U></EM></STRONG></FONT> <A HREF="#0.0">[TOC]</A><BR>
 <BR>
-<TT><FONT SIZE=3>
+<TT><FONT SIZE=5>
     This machine was developed by <A HREF="loiselloiselus@gmail.com">Loisel</A> aka Elias Taufer.<BR>
     <A HREF="http://devernay.free.fr/hacks/chip8/C8TECH10.HTM">Cowgod's Chip-8 Technical Reference</A> was used as template for this document
     what saved me lot of time.<BR>
@@ -743,6 +708,6 @@
 <BR>
 <BR>
 <BR>
-<FONT SIZE=2><TT>August 29, 2022 18:00:00</TT></FONT>
+<FONT SIZE=3><TT>August 29, 2022 18:00:00</TT></FONT>
 </BODY>
 </HTML>

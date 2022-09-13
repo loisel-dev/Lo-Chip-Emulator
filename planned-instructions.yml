@@ -1,0 +1,116 @@
+Registers:
+
+    General Purpose:    X, Y    16 bit
+    Accumulator:        A       16 bit
+    Index:              I       16 bit
+    Stack Pointer:      SP       8 bit
+    ProgramCounter:     PC      16 bit
+    DelayTimer:         DT      16 bit
+    Flags:
+        CarryFlag:          C   boolean
+        NegativeFlag:       N   boolean
+        ZeorFlag:           Z   boolean
+
+Instrcutions:
+
+    Load / Store:
+        $10 - LDA 0x0000    Load A from specified constant, set N and Z
+        $11 - LDA I         Load A from mem(I), set N and Z
+
+        $12 - LDI 0x0000    Load I from specified constant
+
+        $13 - LDX 0x0000    Load X from specified constant
+        $14 - LDX I         Load X from mem(I)
+
+        $15 - LDY 0x0000    Load Y from specified constant
+        $16 - LDY I         Load Y from mem(I)
+
+        $17 - STA I         Store A to mem(I)
+        $18 - STX I         Store X to mem(I)
+        $19 - STY I         Store Y to mem(I)
+
+    Transfer Register:
+        $20 - TAX           Transfer A to X
+        $21 - TAY           Transfer A to Y
+        $22 - TAI           Transfer A to I
+
+        $23 - TIA           Transfer I to A, set N and Z
+        $24 - TIX           Transfer I to X
+        $25 - TIY           Transfer I to Y
+
+        $26 - TXA           Transfer X to A, set N and Z
+        $27 - TXI           Transfer X to I
+        $28 - TXY           Transfer X to Y
+
+        $29 - TYA           Transfer Y to A, set N and Z
+        $2A - TYI           Transfer Y to I
+        $2B - TYX           Transfer Y to X
+
+        $2C - TADT          Transfer A to DT
+        $2D - TDTA          Transfer DT to A, set N and Z
+
+    Jumps And Routine:
+        $0A - CAL 0x0000    Push PC on stack and set PC to specified constant
+        $0B - CAL I         Push PC on stack and set PC to I
+        $0C - RET           Pop address from stack and set it to PC
+        $0D - JMP 0x0000    Set PC to specified constant
+        $0E - JMP I         Set PC to I
+    
+    System:
+        $00 - EXIT          Stop the program
+        $01 - IN            Interrupt program until Input from device
+        $02 - IN DT         Interrupt program until DT = 0
+    
+    Logical:
+        $30 - AND 0x0000    perform logical AND on A with specified constant and save to A, set N and Z
+        $31 - AND I         perform logical AND on A with mem(I) and save to A, set N and Z
+        $32 - AND X         perform logical AND on A with X and save to A, set N and Z
+        $33 - AND Y         perform logical AND on A with Y and save to A, set N and Z
+
+        $34 - OR 0x0000     perform logical OR on A with specified constant and save to A, set N and Z
+        $35 - OR I          perform logical OR on A with mem(I) and save to A, set N and Z
+        $36 - OR X          perform logical OR on A with X and save to A, set N and Z
+        $37 - OR Y          perform logical OR on A with Y and save to A, set N and Z
+
+        $38 - XOR 0x0000    perform logical EXCLUSIVE OR on A with specified constant and save to A, set N and Z
+        $39 - XOR I         perform logical EXCLUSIVE OR on A with mem(I) and save to A, set N and Z
+        $3A - XOR X         perform logical EXCLUSIVE OR on A with X and save to A, set N and Z
+        $3B - XOR Y         perform logical EXCLUSIVE OR on A with Y and save to A, set N and Z
+
+    Arithmetic:
+        $40 - ADD 0x0000    Add specified constant to A, set N, Z and C
+        $41 - ADD I         Add mem(I) constant to A, set N, Z and C
+        $42 - ADD X         Add X constant to A, set N, Z and C
+        $43 - ADD Y         Add Y constant to A, set N, Z and C
+
+        $44 - SUB 0x0000    Subtract specified constant from A, set N, Z and C
+        $45 - SUB I         Subtract mem(I) constant from A, set N, Z and C
+        $46 - SUB X         Subtract X constant from A, set N, Z and C
+        $47 - SUB Y         Subtract Y constant from A, set N, Z and C
+
+        $48 - CMP 0x0000    Subtract specified constant from A and just set the Flags, set N, Z and C
+        $49 - CMP I         Subtract mem(I) from A and just set the Flags, set N, Z and C
+        $4A - CMP X         Subtract X from A and just set the Flags, set N, Z and C
+        $4B - CMP Y         Subtract Y from A and just set the Flags, set N, Z and C
+
+    Shifts:
+        $4C - SL            Shift bits of A left by one, set N, Z and C
+        $4D - SR            Shift bits of A right by one, set N, Z and C
+        $4E - ROL           Rotate bits of A left by one, set N, Z and C
+        $4F - ROR           Rotate bits of A right by one, set N, Z and C
+
+    Branches:
+        $50 - BCS I         Jump to I, if carry flag is set
+        $51 - BCS 0x0000    Increase PC by specified constant if carry flag is set
+        $52 - BCC I         Jump to I, if carry flag is clear
+        $53 - BCC 0x0000    Increase PC by specified constant if carry flag is clear
+
+        $54 - BNS I         Jump to I, if negative flag is set
+        $55 - BNS 0x0000    Increase PC by specified constant if negative flag is set
+        $56 - BNC I         Jump to I, if negative flag is clear
+        $57 - BNC 0x0000    Increase PC by specified constant if negative flag is clear
+
+        $58 - BZS I          Jump to I, if zero flag is set
+        $59 - BZS 0x0000     Increase PC by specified constant if zero flag is set
+        $5A - BZC I          Jump to I, if zero flag is clear
+        $5B - BZC 0x0000     Increase PC by specified constant if zero flag is clear

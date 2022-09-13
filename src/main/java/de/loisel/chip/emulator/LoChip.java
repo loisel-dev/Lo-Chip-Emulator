@@ -16,8 +16,9 @@
 
 package de.loisel.chip.emulator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HexFormat;
+import java.util.Locale;
 import java.util.Random;
 
 public class LoChip implements Runnable{
@@ -26,36 +27,35 @@ public class LoChip implements Runnable{
     private long remainInstr = Long.MAX_VALUE;
     private long cycleCount = 0;
 
-    private byte rX;
-    private byte rY;
-    private boolean f;
-    private short programCounter;
-    private short indexReg;
-    private int delayTimer;
-    private int soundTimer;
+    private short X;
+    private short Y;
+    private short A;
+    private short I;
+    private short PC;
+    private boolean C;
+    private boolean N;
+    private boolean Z;
 
     private final Memory memory;
     private final Stack stack;
-    private final FrameBuffer frameBuffer;
-    private final Keyboard keyboard;
 
-    private final Map<Integer, Runnable> instructionMap;
+    private final Runnable[] instructions;
 
-    public LoChip(Program program, FrameBuffer frameBuffer, Keyboard keyboard) {
-        this.frameBuffer = frameBuffer;
-        this.keyboard = keyboard;
+    public LoChip(Program program) {
         this.memory = new Memory();
         this.stack = new Stack();
 
-        this.programCounter = 0;
-        this.indexReg = 0;
-        this.delayTimer = 0;
-        this.soundTimer = 0;
-        this.rX = 0;
-        this.rY = 0;
+        this.X = 0;
+        this.Y = 0;
+        this.A = 0;
+        this.I = 0;
+        this.PC = 0;
+        C = false;
+        N = false;
+        Z = false;
 
-        instructionMap = new HashMap<>();
-        setUpInstructionMap();
+        instructions = new Runnable[0x100];
+        setUpInstructions();
 
         this.isRunning = false;
         this.rand = new Random();
@@ -65,23 +65,18 @@ public class LoChip implements Runnable{
 
     public synchronized void loadProgram(Program program) {
         byte[] rawProgram = program.getProgram();
-        for (int i = programCounter; i < (programCounter + rawProgram.length); i++) {
-            memory.write((short)i, rawProgram[i - programCounter]);
+        for (int i = PC; i < (PC + rawProgram.length); i++) {
+            memory.write((short)i, rawProgram[i - PC]);
         }
-        this.programCounter = memory.fetchWord((short) 0);
+        this.PC = memory.fetchWord((short) 0);
     }
-
-    public synchronized boolean isSound() {
-        return soundTimer > 0;
-    }
-
     @Override
     public void run() {
-        runProgram();
+        this.loop();
     }
 
     /**
-     * @param instructions the max number of executed instructions
+     * @param instructions the max number of instructions to execute
      * @return the number of instructions executed before exit
      */
     public long run(long instructions) {
@@ -90,203 +85,237 @@ public class LoChip implements Runnable{
         return  cycleCount;
     }
 
-    public void debugRegs() {
-        System.out.println("Registers:\n");
-
-        System.out.println("Rx: " + rX);
-        System.out.println("Ry: " + rY);
-        System.out.println("f:  " + f);
-        System.out.println("PC: " + programCounter);
-        System.out.println("SP: " + stack.getStackPointer());
-        System.out.println("I:  " + indexReg);
-        System.out.println("DT: " + delayTimer);
-        System.out.println("ST: " + soundTimer);
-    }
-
     public byte[] dumpMemory() {
         return memory.copyData();
     }
 
-    private void setUpInstructionMap() {
-        /*
-        Idea to increase speed:
-        create a Runnable Array for the instructions with 0xFF entries
-        and let the opcode be the index of the instruction.
-         */
-        instructionMap.put(0xE0,                // $E0 - CLS
-                frameBuffer::clearBuffer
-        );
-        instructionMap.put(0xEE, () ->          // $EE - RET
-                programCounter = stack.pop()
-        );
-        instructionMap.put(0x10, () ->          // $10 - JP addr
-                programCounter = fetchPCWord()
-        );
-        instructionMap.put(0x11, () -> {        // $11 - JP I, F
-            if(f)
-                programCounter = indexReg;
-        });
-        instructionMap.put(0x20, () -> {        // $20 - CALL addr
-            short dest = fetchPCWord();
-            stack.push(programCounter);
-            programCounter = dest;
-        });
-        instructionMap.put(0x30, () -> {        // $30 - SE Rx, b1
-            byte b1 = fetchPC();
-            if(rX == b1)
-                programCounter = indexReg;
-        });
-        instructionMap.put(0x31, () -> {        // $31 - JNE Rx, b1
-            byte b1 = fetchPC();
-            if(rX != b1)
-                programCounter = indexReg;
-        });
-        instructionMap.put(0x50, () -> {        // $50 - JE Rx, Ry
-            if(rX == rY)
-                programCounter = indexReg;
-        });
-        instructionMap.put(0x51, () -> {        // $51 - JNE Rx, Ry
-            if(rX != rY)
-                programCounter = indexReg;
-        });
-        instructionMap.put(0x60, () ->          // $60 - LD Rx, b1
-                rX = fetchPC()
-        );
-        instructionMap.put(0x61, () ->          // $61 - LD Ry, b1
-                rY = fetchPC()
-        );
+    public void logMemory() {
+        byte[] mem = memory.copyData();
 
+        // find end
+        int end = 0;
+        for (int i = 0; i < mem.length; i++) {
+            if(mem[i] != 0)
+                end = i;
+        }
 
-        instructionMap.put(0x62, () ->          // $62 - LD Rx, I
-                rX = memory.fetch(indexReg)
-        );
-        instructionMap.put(0x63, () ->          // $63 - LD Ry, I
-                rY = memory.fetch(indexReg)
-        );
-        instructionMap.put(0x64, () ->          // $64 - LD I, Rx
-                memory.write(indexReg, rX)
-        );
-        instructionMap.put(0x65, () ->          // $65 - LD I, Ry
-                memory.write(indexReg, rY)
-        );
+        end += 15 - (end % 16);
 
+        // print
+        System.out.print("\n");
+        System.out.println("Memory:");
+        for (int i = 0; i <= end; i++) {
+            if (i % 16 == 0 && i > 0) {
+                System.out.print("\n");
+            }
 
-        instructionMap.put(0x70, () ->          // $70 - ADD Rx, b1
-                rX += fetchPC()
-        );
-        instructionMap.put(0x71, () ->          // $71 - ADD Ry, b1
-                rY += fetchPC()
-        );
-        instructionMap.put(0x80, () ->          // $80 - LD Rx, Ry
-                rX = rY
-        );
-        instructionMap.put(0x8A, () ->          // $8A - LD Ry, Rx
-                rY = rX
-        );
-        instructionMap.put(0x81, () ->          // $81 - OR Rx, Ry
-                rX |= rY
-        );
-        instructionMap.put(0x82, () ->          // $82 - AND Rx, Ry
-                rX &= rY
-        );
-        instructionMap.put(0x83, () ->          // $83 - XOR Rx, Ry
-                rX ^= rY
-        );
-        instructionMap.put(0x84, () -> {        // $84 - ADD Rx, Ry
-                f = willAdditionOverflow(rX, rY);
-                rX += rY;
-        });
-        instructionMap.put(0x85, () -> {        // $85 - SUB Rx, Ry
-            f = willSubtractionOverflow(rX, rY);
-            rX -= rY;
-        });
-        instructionMap.put(0x86, () -> {        // $86 - SHR Rx, b1
-            f = (0b00000001 & rX) != 0;
-            rX = (byte) ((rX & 0xFF) >>> 1);
-        });
-        instructionMap.put(0x87, () -> {        // $87 - SUBN Rx, Ry
-            f = willSubtractionOverflow(rY, rX);
-            rX = (byte) (rY - rX);
-        });
-        instructionMap.put(0x8E, () -> {        // $8E - SHL Rx, 1
-            f = (0b10000000 & rX) != 0;
-            rX = (byte) (rX << 1);
-        });
-        instructionMap.put(0xA0, () ->          // $A0 - LD I, addr
-                indexReg = fetchPCWord()
-        );
-        instructionMap.put(0xA1, () -> {        // $A1 - LD I, RxRy
-            indexReg = (short) (rX << 8);
-            indexReg |= rY;
-        });
-        instructionMap.put(0xB0, () ->          // $B0 - JP Rx, addr
-                programCounter = (short) (fetchPC() + rX)
-        );
-        instructionMap.put(0xC0, () ->          // $C0 - RND Rx, b1
-                rX = (byte) (rand.nextInt() & fetchPC())
-        );
-        instructionMap.put(0xD0, () -> {        // $D0 - DRW Rx, Ry, n
-            int b1 = Byte.toUnsignedInt(fetchPC());
-            byte[] sprite = memory.fetchArray(indexReg, b1);
-            f = frameBuffer.setSprite(sprite, rX, rY);
-        });
-        instructionMap.put(0xE1, () -> {        // $E1 - JKP Rx
-            if(keyboard.isDown(rX))
-                programCounter = indexReg;
-        });
-        instructionMap.put(0xE2, () -> {        // $E2 - JKNP Rx
-            if(!keyboard.isDown(rX))
-                programCounter = indexReg;
-        });
-        instructionMap.put(0xF1, () ->          // $F1 - LD Rx, DT
-                rX = (byte) delayTimer
-        );
-        instructionMap.put(0xF2, () -> {        // $F2 - LD Rx, K
-            byte k;
-            do {
-                k = keyboard.getNextKey();
-            } while (k == 0xFF);
-            rX = k;
-        });
-        instructionMap.put(0xF3, () ->          // $F3 - LD DT, Rx
-                delayTimer = rX
-        );
-        instructionMap.put(0xF4, () ->          // $F4 - LD ST, Rx
-                soundTimer = rX
-        );
-        instructionMap.put(0xFA, () ->          // $FA - ADD I, Rx
-                indexReg += rX
-        );
-        instructionMap.put(0xFC, () -> {        // $FC - LD B, Rx
-            int num = Byte.toUnsignedInt(rX);
-            memory.write(indexReg, (byte) (num / 100));
-            memory.write((short) (indexReg + 1), (byte) ((num % 100) / 10));
-            memory.write((short) (indexReg + 2), (byte) ((num % 100) % 10));
-        });
-        instructionMap.put(0xFD, () -> {        // $FD - LD I, Rx, Ry
-            memory.write(indexReg, rX);
-            memory.write((short) (indexReg + 1), rY);
-        });
-        instructionMap.put(0xFE, () -> {        // $FE - LD Rx, Ry, I
-            rX = memory.fetch(indexReg);
-            rY = memory.fetch((short) (indexReg + 1));
-        });
-        instructionMap.put(0xD1, () -> {        // $D1 - DRW Rx, Ry
-            // Instruction not implemented
-            // Display 16x16 sprite
-        });
-        instructionMap.put(0xAA, () ->          // $AA - EXIT
-                isRunning = false
-        );
+            if (i % 16 == 0) {
+                String address = HexFormat.of().toHexDigits(i).toUpperCase(Locale.ROOT);
+                if(address.length() == 1)
+                    address = "000" + address;
+                else if(address.length() == 2)
+                    address = "00" + address;
+                else if(address.length() == 3)
+                    address = "0" + address;
+                address = address.substring(4);
+                System.out.print("0x" + address + ":  ");
+            }
+
+            String number = HexFormat.of().formatHex(Arrays.copyOfRange(mem, i, i + 1)).toUpperCase();
+            System.out.print(number + "  ");
+
+        }
+        System.out.print("\n\n");
     }
-    private void runProgram() {
-        this.loop();
+
+    private void setUpInstructions() {
+
+        /*
+                Load and Store
+         */
+        instructions[0x10] = () ->          // $10 - LDA 0x0000    Load A from specified constant, set N and Z
+                setA(fetchPCW());
+        instructions[0x11] = () ->          // $11 - LDA I         Load A from mem(I), set N and Z
+                setA(memory.fetchWord(I));
+        instructions[0x12] = () ->          // $12 - LDI 0x0000    Load I from specified constant
+                I = fetchPCW();
+        instructions[0x13] = () ->          // $13 - LDX 0x0000    Load X from specified constant
+                X = fetchPCW();
+        instructions[0x14] = () ->          // $14 - LDX I         Load X from mem(I)
+                X = memory.fetchWord(I);
+        instructions[0x15] = () ->          // $15 - LDY 0x0000    Load Y from specified constant
+                Y = fetchPCW();
+        instructions[0x16] = () ->          // $16 - LDY I         Load Y from mem(I)
+                Y = memory.fetchWord(I);
+        instructions[0x17] = () ->          // $17 - STA I         Store A to mem(I)
+                memory.writeW(I, A);
+        instructions[0x18] = () ->          // $18 - STX I         Store X to mem(I)
+                memory.writeW(I, X);
+        instructions[0x19] = () ->          // $19 - STY I         Store Y to mem(I)
+                memory.writeW(I, Y);
+
+        /*
+                Transfer Registers
+         */
+        instructions[0x20] = () ->          // $20 - TAX           Transfer A to X
+                X = A;
+        instructions[0x21] = () ->          // $21 - TAY           Transfer A to Y
+                Y = A;
+        instructions[0x22] = () ->          // $22 - TAI           Transfer A to I
+                I = A;
+        instructions[0x23] = () ->          // $23 - TIA           Transfer I to A, set N and Z
+                setA(I);
+        instructions[0x24] = () ->          // $24 - TIX           Transfer I to X
+                X = I;
+        instructions[0x25] = () ->          // $25 - TIY           Transfer I to Y
+                Y = A;
+        instructions[0x26] = () ->          // $26 - TXA           Transfer X to A, set N and Z
+                setA(X);
+        instructions[0x27] = () ->          // $27 - TXI           Transfer X to I
+                I = X;
+        instructions[0x28] = () ->          // $28 - TXY           Transfer X to Y
+                Y = X;
+        instructions[0x29] = () ->          // $29 - TYA           Transfer Y to A, set N and Z
+                setA(Y);
+        instructions[0x2A] = () ->          // $2A - TYI           Transfer Y to I
+                I = Y;
+        instructions[0x2B] = () ->          // $2B - TYX           Transfer Y to X
+                X = Y;
+
+        /*
+                Jumps And Routine
+         */
+        instructions[0x0A] = () ->          // $0A - CAL 0x0000    Push PC on stack and set PC to specified constant
+                pushPC(fetchPCW());
+        instructions[0x0B] = () ->          // $0B - CAL I         Push PC on stack and set PC to I
+                pushPC(I);
+        instructions[0x0C] = () ->          // $0C - RET           Pop address from stack and set it to PC
+                PC = stack.pop();
+        instructions[0x0D] = () ->          // $0D - JMP 0x0000    Set PC to specified constant
+                PC = fetchPCW();
+        instructions[0x0E] = () ->          // $0E - JMP I         Set PC to I
+                PC = I;
+
+        /*
+                System
+         */
+        instructions[0x00] = () ->          // $00 - EXIT          Stop the program
+                isRunning = false;
+        instructions[0x01] = () ->          // $01 - IN            Interrupt program until Input from device
+                System.out.println("Not implemented: $01 - IN");    // Todo
+
+        /*
+                Logical
+         */
+        instructions[0x30] = () ->          // $30 - AND 0x0000    perform logical AND on A with specified constant and save to A, set N and Z
+                setA((short) (A & fetchPCW()));
+        instructions[0x31] = () ->          // $31 - AND I         perform logical AND on A with mem(I) and save to A, set N and Z
+                setA((short) (A & memory.fetchWord(I)));
+        instructions[0x32] = () ->          // $32 - AND X         perform logical AND on A with X and save to A, set N and Z
+                setA((short) (A & X));
+        instructions[0x33] = () ->          // $33 - AND Y         perform logical AND on A with Y and save to A, set N and Z
+                setA((short) (A & Y));
+        instructions[0x34] = () ->          // $34 - OR 0x0000     perform logical OR on A with specified constant and save to A, set N and Z
+                setA((short) (A | fetchPCW()));
+        instructions[0x35] = () ->          // $35 - OR I          perform logical OR on A with mem(I) and save to A, set N and Z
+                setA((short) (A | memory.fetchWord(I)));
+        instructions[0x36] = () ->          // $36 - OR X          perform logical OR on A with X and save to A, set N and Z
+                setA((short) (A | X));
+        instructions[0x37] = () ->          // $37 - OR Y          perform logical OR on A with Y and save to A, set N and Z
+                setA((short) (A | Y));
+        instructions[0x38] = () ->          // $38 - XOR 0x0000    perform logical EXCLUSIVE OR on A with specified constant and save to A, set N and Z
+                setA((short) (A ^ fetchPCW()));
+        instructions[0x39] = () ->          // $39 - XOR I         perform logical EXCLUSIVE OR on A with mem(I) and save to A, set N and Z
+                setA((short) (A ^ memory.fetchWord(I)));
+        instructions[0x3A] = () ->          // $3A - XOR X         perform logical EXCLUSIVE OR on A with X and save to A, set N and Z
+                setA((short) (A ^ X));
+        instructions[0x3B] = () ->          // $3B - XOR Y         perform logical EXCLUSIVE OR on A with Y and save to A, set N and Z
+                setA((short) (A ^ Y));
+
+        /*
+                Arithmetic
+         */
+        instructions[0x40] = () ->          // $40 - ADD 0x0000    Add specified constant to A, set N, Z and C
+                addA(fetchPCW());
+        instructions[0x41] = () ->          // $41 - ADD I         Add mem(I) constant to A, set N, Z and C
+                addA(memory.fetchWord(I));
+        instructions[0x42] = () ->          // $42 - ADD X         Add X constant to A, set N, Z and C
+                addA(X);
+        instructions[0x43] = () ->          // $43 - ADD Y         Add Y constant to A, set N, Z and C
+                addA(Y);
+        instructions[0x44] = () ->          // $44 - SUB 0x0000    Subtract specified constant from A, set N, Z and C
+                subA(fetchPCW());
+        instructions[0x45] = () ->          // $45 - SUB I         Subtract mem(I) constant from A, set N, Z and C
+                subA(memory.fetchWord(I));
+        instructions[0x46] = () ->          // $46 - SUB X         Subtract X constant from A, set N, Z and C
+                subA(X);
+        instructions[0x47] = () ->          // $47 - SUB Y         Subtract Y constant from A, set N, Z and C
+                subA(Y);
+        instructions[0x48] = () ->          // $48 - CMP 0x0000    Subtract specified constant from A and just set the Flags, set N, Z and C
+                compareA(fetchPCW());
+        instructions[0x49] = () ->          // $49 - CMP I         Subtract mem(I) from A and just set the Flags, set N, Z and C
+                compareA(memory.fetchWord(I));
+        instructions[0x4A] = () ->          // $4A - CMP X         Subtract X from A and just set the Flags, set N, Z and C
+                compareA(X);
+        instructions[0x4B] = () ->          // $4B - CMP Y         Subtract Y from A and just set the Flags, set N, Z and C
+                compareA(Y);
+
+        /*
+                Shifts
+         */
+        instructions[0x4C] = () -> {        // $4C - SL            Shift bits of A left by one, set N, Z and C
+            C = (A & 0b1000000000000000) != 0;
+            A <<= 1;
+            setNZFlags();
+        };
+        instructions[0x4D] = () -> {        // $4D - SR            Shift bits of A right by one, set N, Z and C
+            C = (A & 0b0000000000000001) != 0;
+            A >>>= 1;
+            setNZFlags();
+        };
+        instructions[0x4E] = () -> {        // $4E - ROL           Rotate bits of A left by one, set N, Z and C
+            C = (A & 0b1000000000000000) != 0;
+            A = (short) ((A << 1) | ((A) >>> (15)));
+            setNZFlags();
+        };
+        instructions[0x4F] = () -> {        // $4F - ROR           Rotate bits of A right by one, set N, Z and C
+            C = (A & 0b0000000000000001) != 0;
+            A = (short) ((A >>> 1) | ((A) << (15)));
+            setNZFlags();
+        };
+
+        /*
+                Branches
+         */
+        instructions[0x50] = () ->          // $50 - BCS I         Jump to I, if carry flag is set
+            { if (C) PC = I; };
+        instructions[0x51] = () ->          // $51 - BCS 0x0000    Increase PC by specified constant if carry flag is set
+            { if (C) PC += fetchPCW(); };
+        instructions[0x52] = () ->          // $52 - BCC I         Jump to I, if carry flag is clear
+            { if (!C) PC = I; };
+        instructions[0x53] = () ->          // $53 - BCC 0x0000    Increase PC by specified constant if carry flag is clear
+            { if (!C) PC += fetchPCW(); };
+        instructions[0x54] = () ->          // $54 - BNS I         Jump to I, if negative flag is set
+            { if (N) PC = I; };
+        instructions[0x55] = () ->          // $55 - BNS 0x0000    Increase PC by specified constant if negative flag is set
+            { if (N) PC += fetchPCW(); };
+        instructions[0x56] = () ->          // $56 - BNC I         Jump to I, if negative flag is clear
+            { if (!N) PC = I; };
+        instructions[0x57] = () ->          // $57 - BNC 0x0000    Increase PC by specified constant if negative flag is clear
+            { if (!N) PC += fetchPCW(); };
+        instructions[0x58] = () ->          // $58 - BZS I          Jump to I, if zero flag is set
+            { if (Z) PC = I; };
+        instructions[0x59] = () ->          // $59 - BZS 0x0000     Increase PC by specified constant if zero flag is set
+            { if (Z) PC += fetchPCW(); };
+        instructions[0x5A] = () ->          // $5A - BZC I          Jump to I, if zero flag is clear
+            { if (!Z) PC = I; };
+        instructions[0x5B] = () ->          // $5B - BZC 0x0000     Increase PC by specified constant if zero flag is clear
+            { if (!Z) PC += fetchPCW(); };
     }
 
     private void loop() {
         System.out.println("START LOOP =======================");
 
-        long lastTimerUpdate = System.nanoTime();
         isRunning = true;
 
         /* debug info */
@@ -295,18 +324,8 @@ public class LoChip implements Runnable{
         /* debug info */
 
         while(isRunning && remainInstr > 0) {
-            long currentTime = System.nanoTime();
-
             cycle();
             cycleCount++;
-
-            if(currentTime - lastTimerUpdate >= (1e9F/60L)) {
-                if(delayTimer > 0)
-                    delayTimer--;
-                if(soundTimer > 0)
-                    soundTimer --;
-                lastTimerUpdate = currentTime;
-            }
 
             remainInstr--;
         }
@@ -321,7 +340,7 @@ public class LoChip implements Runnable{
         // Fetch
         int opcode = Byte.toUnsignedInt(fetchPC());
 
-        Runnable method = instructionMap.get(opcode);
+        Runnable method = instructions[opcode];
         if(method != null)
             method.run();
         else
@@ -329,29 +348,51 @@ public class LoChip implements Runnable{
     }
 
     private byte fetchPC() {
-        byte data = memory.fetch(programCounter);
-        programCounter++;
+        byte data = memory.fetch(PC);
+        PC++;
         return data;
     }
 
-    private short fetchPCWord() {
-        short data = (short)(memory.fetch(programCounter) << 8);
-        programCounter++;
-        data |= memory.fetch(programCounter);
-        programCounter++;
+    private short fetchPCW() {
+        short data = (short)(memory.fetch(PC) << 8);
+        PC++;
+        data |= 0x00FF & memory.fetch(PC);
+        PC++;
         return data;
     }
 
-    private static boolean willAdditionOverflow(byte left, byte right) {
-        int l = Byte.toUnsignedInt(left);
-        int r = Byte.toUnsignedInt(right);
-        return l + r > 255;
+    private void setA(short a) {
+        this.A = a;
+        setNZFlags();
     }
 
-    private static boolean willSubtractionOverflow(byte left, byte right) {
-        int l = Byte.toUnsignedInt(left);
-        int r = Byte.toUnsignedInt(right);
-        return r < l;
+    private void setNZFlags() {
+        N = A < 0;
+        Z = A == 0;
+    }
+
+    private void addA(short add) {
+        C = A + add > Short.MAX_VALUE;
+        A = (short) (A + add);
+        setNZFlags();
+    }
+
+    private void subA(short sub) {
+        C = A - sub < Short.MIN_VALUE;
+        A = (short) (A - sub);
+        setNZFlags();
+    }
+
+    private void compareA(short com) {
+        C = A - com < Short.MIN_VALUE;
+        com = (short) (A - com);
+        N = com < 0;
+        Z = com == 0;
+    }
+
+    private void pushPC(short newAddress) {
+        stack.push(PC);
+        PC = newAddress;
     }
 
 }

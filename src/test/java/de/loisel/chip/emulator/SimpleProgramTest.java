@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SimpleProgramTest {
 
     private final LoChip chip;
-    private final Keyboard keyboard;
-    private final FrameBuffer frameBuffer;
 
     String binPath;
 
@@ -36,20 +34,20 @@ class SimpleProgramTest {
         File file = new File(path);
         binPath = file.getAbsolutePath() + File.separator + "bin" + File.separator;
 
-        this.keyboard = new Keyboard();
-        this.frameBuffer = new FrameBuffer(256, 144);
-
-        this.chip = new LoChip(new Program(new byte[0]), frameBuffer, keyboard);
+        this.chip = new LoChip(new Program(new byte[0]));
     }
 
     @Test
     void simpleProgram() {
-        chip.loadProgram(new Program(binPath + "simple-program.bin"));
+        chip.loadProgram(new Program(binPath + "simple-test.bin"));
 
         chip.run(100);
 
+        chip.logMemory();
+
         byte[] mem = chip.dumpMemory();
-        assertEquals(0x41, mem[0x000A]);
+        assertEquals(0x01, mem[0x0022]);
+        assertEquals(0x02, mem[0x0023]);
     }
 
 }
